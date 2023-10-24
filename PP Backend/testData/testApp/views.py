@@ -1,8 +1,11 @@
 # Create your views here.
 from django.shortcuts import render
-from .models import Task
+from .models import Task, Songs, Artists, Albums
 
 
 def index(request):
-    tasks = Task.objects.all()
-    return render(request, 'index.html', {'tasks': tasks})
+    #tasks = Task.objects.all()
+    songs = Songs.objects.all()
+    artists = Artists.objects.all()
+    albums = Albums.objects.all()
+    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums})
