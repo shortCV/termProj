@@ -6,7 +6,12 @@
 <body>
     <h1>Thump</h1>
 
-    <h2>Display</h2>
+    <!--Welcome user/see who's logged in-->
+    {% block content %}
+    Hello, {{ user.username|default:'Guest' }}!
+    {% endblock %}
+
+    <h2>Display</h2> <!--Display songs in the database-->
     <ul>
         {% for Songs in songs %}
             <h6>{{ Songs.title }}, {{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h6>
@@ -14,10 +19,11 @@
     </ul>
 
     <h2>Search</h2>
-    <div>
+    <form method="post" action="/search_direct">
+        {% csrf_token %} <!--Keeps hackers from taking over the form-->
         <input type="text" placeholder="Search.." name="search">
         <button type="submit">Submit</button>
-    </div>
+    </form>
     <h2>User Accounts</h2>
     <h2>Playlists</h2>
     <h2>Review</h2>
