@@ -4,7 +4,6 @@ from .models import Task, Songs, Artists, Albums
 
 
 def index(request):
-    #tasks = Task.objects.all()
     songs = Songs.objects.all()
     artists = Artists.objects.all()
     albums = Albums.objects.all()

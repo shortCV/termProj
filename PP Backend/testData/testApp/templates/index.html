@@ -4,6 +4,24 @@
     <title>To-Do</title>
 </head>
 <body>
-    <h1>To-Do</h1>
+    <h1>Thump</h1>
+
+    <h2>Display</h2>
+    <ul>
+        {% for Songs in songs %}
+            <h6>{{ Songs.title }}, {{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h6>
+        {% endfor %}
+    </ul>
+
+    <h2>Search</h2>
+    <div>
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit">Submit</button>
+    </div>
+    <h2>User Accounts</h2>
+    <h2>Playlists</h2>
+    <h2>Review</h2>
+    <h2>Like</h2>
+
 </body>
 </html>

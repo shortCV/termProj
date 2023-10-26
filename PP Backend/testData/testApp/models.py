@@ -13,12 +13,18 @@ class Task(models.Model):
 class Artists(models.Model):
     name = models.CharField(max_length=100)
 
+    def __str__(self):
+        return self.name
+
 
 class Songs(models.Model):
     title = models.CharField(max_length=200)
     artist = models.ManyToManyField(Artists)
     date = models.DateField(default=datetime.now)
     length = models.DurationField(default=timedelta)
+
+    def __str__(self):
+        return self.title, self.date, self.artist
 
 
 class Albums(models.Model):
