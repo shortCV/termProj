@@ -13,7 +13,7 @@
 
     <h2>Display</h2> <!--Display songs in the database-->
     <ul>
-        {% for Songs in songs %}
+        {% for Songs in songs|slice:":5" %}
             <h6>{{ Songs.title }}, {{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h6>
         {% endfor %}
     </ul>
