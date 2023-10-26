@@ -14,7 +14,7 @@ class Artists(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return '%s'%(self.name)
+        return self.name
 
 
 class Songs(models.Model):
@@ -28,6 +28,7 @@ class Songs(models.Model):
 
 
 class Albums(models.Model):
+    cover = models.ImageField(upload_to='cover_pic', default='default.jpg')
     title = models.CharField(max_length=200)
     song = models.ManyToManyField(Songs)
     artist = models.ManyToManyField(Artists)
