@@ -5,7 +5,23 @@
     <title>You searched for...</title>
 </head>
 <body>
-    <h1>You searched...</h1>
+    <ul> <!--Display search result-->
+        {% if searched %}
+            <h2>You searched: {{ searched }}</h2>
+            <br/>
+            {% for song in songs %}
+                <h6> {{ song.title }}, {{ song.artist.all|join:", "  }} </h6>
+            {% endfor %}
+            <br/>
+            {% for artist in artists %}
+                <h6> {{ artist }} </h6>
+            {% endfor %}
+        {% else %}
+            <h2>You didn't search anything</h2>
+        {% endif %}
+    </ul>
+
+
 
 </body>
 </html>

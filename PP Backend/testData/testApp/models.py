@@ -14,7 +14,7 @@ class Artists(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return '%s'%(self.name)
 
 
 class Songs(models.Model):
@@ -24,7 +24,7 @@ class Songs(models.Model):
     length = models.DurationField(default=timedelta)
 
     def __str__(self):
-        return self.title, self.date, self.artist
+        return '%s %s %s'%(self.title, self.date, self.artist)
 
 
 class Albums(models.Model):
