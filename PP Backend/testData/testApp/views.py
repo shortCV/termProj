@@ -1,5 +1,6 @@
 # Create your views here.
 from django.shortcuts import render, redirect
+from django import forms
 from .models import Task, Songs, Artists, Albums, Playlist
 from .forms import NewUserForm
 from django.contrib.auth import login, authenticate, logout
@@ -18,6 +19,15 @@ def search(request):
                                                       'albums': albums})  # pass the search results through dict.
     else:
         return render(request, 'search_direct.html', {})
+
+
+def play(request):
+    results = request.GET['filter']
+    songs = Songs.objects.all()
+    artists = Artists.objects.all()
+    albums = Albums.objects.all()
+    playlists = Playlist.objects.all()
+    return render(request, 'playlist_display.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'filter': results})
 
 
 def index(request):

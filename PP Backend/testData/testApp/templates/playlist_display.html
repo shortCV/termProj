@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist</title>
+</head>
+<body>
+    <h4> Selected : {{filter}}</h4>
+    <ul>
+        {% for Playlist in playlists %}
+            {% if filter == Playlist.title %}
+                <h4> Selected : {{Playlist.title}}</h4>
+                <h6> - {{ Playlist.song.all|join:'<br>'  }}</h6>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+</body>
+</html>
