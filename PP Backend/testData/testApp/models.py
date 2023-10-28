@@ -37,3 +37,11 @@ class Albums(models.Model):
 
     def __str__(self):
         return '%s %s %s' % (self.title, self.date, self.artist)
+
+
+class Playlist(models.Model):
+    title = models.CharField(max_length=200)
+    song = models.ManyToManyField(Songs)
+
+    def __str__(self):
+        return '%s %s' % (self.title, self.song)

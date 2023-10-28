@@ -1,6 +1,6 @@
 # Create your views here.
 from django.shortcuts import render, redirect
-from .models import Task, Songs, Artists, Albums
+from .models import Task, Songs, Artists, Albums, Playlist
 from .forms import NewUserForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
@@ -24,7 +24,8 @@ def index(request):
     songs = Songs.objects.all()
     artists = Artists.objects.all()
     albums = Albums.objects.all()
-    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums})
+    playlists = Playlist.objects.all()
+    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists})
 
 
 def register_request(request):
