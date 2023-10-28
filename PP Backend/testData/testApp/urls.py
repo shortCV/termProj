@@ -20,4 +20,5 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('search_direct', views.search, name='search-direct'),
+    path("register", views.register_request, name="register")
 ]
