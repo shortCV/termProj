@@ -10,15 +10,17 @@
 
   {% load crispy_forms_tags %}
 
-  <!--Login-->
   <div class="container py-5">
+
     <h1>Login</h1>
+
     <form method="POST">
-      {% csrf_token %}
-      {{ login_form|crispy }}
-      <button class="btn btn-primary" type="submit">Login</button>
+      {% csrf_token %} <!--Keeps hackers from taking over the form-->
+      {{ login_form|crispy }} <!-- Form uses crispy to format -->
+      <button class="btn btn-primary" type="submit">Login</button> <!-- Submit button of login-->
     </form>
-    <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p>
+
+    <p class="text-center">Don't have an account? <a href="/register">Create an account</a>.</p> <!-- If user needs to register, link them to register page -->
   </div>
 
   {% endblock %}
