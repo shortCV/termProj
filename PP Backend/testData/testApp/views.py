@@ -22,7 +22,7 @@ def search(request):
 
 
 def play(request):
-    results = request.GET['filter']
+    results = request.GET['filter'] # get selected playlist from dropdown 
     songs = Songs.objects.all()
     artists = Artists.objects.all()
     albums = Albums.objects.all()

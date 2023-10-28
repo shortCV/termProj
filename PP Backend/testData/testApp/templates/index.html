@@ -40,16 +40,16 @@
     <h2>Playlists</h2>
     <ul>
         {% if user.is_authenticated %} <!-- If user is already logged in -->
-            <form action="/playlist_display" method="get">
+            <form action="/playlist_display" method="get"> <!-- Direct to playlist display page -->
                 <label for="filter">Choose Playlist:</label>
-                <select name="filter" id="filter">
-                    {% for Playlist in playlists %}
-                        {% if Playlist.user == user %}
-                            <option value={{Playlist.title}}>{{ Playlist.title }}</option>
+                <select name="filter" id="filter"> <!-- Dropdown -->
+                    {% for Playlist in playlists %} <!-- Go through all playlists -->
+                        {% if Playlist.user == user %} <!-- If users playlist match current user logged in -->
+                            <option value={{Playlist.title}}>{{ Playlist.title }}</option> <!-- Display playlist as option -->
                         {% endif %}
                     {% endfor %}
                 </select>
-                <input type="submit" value="Submit">
+                <input type="submit" value="Submit"> <!-- Submit -->
             </form>
         {% else %} <!-- If user is not logged in -->
             <h4>Nothing to see here</h4>

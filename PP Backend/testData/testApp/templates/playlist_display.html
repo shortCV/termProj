@@ -5,12 +5,11 @@
     <title>Playlist</title>
 </head>
 <body>
-    <h4> Selected : {{filter}}</h4>
+    <h4> Selected : {{filter}}</h4> <!-- Show selected playlist -->
     <ul>
-        {% for Playlist in playlists %}
-            {% if filter == Playlist.title %}
-                <h4> Selected : {{Playlist.title}}</h4>
-                <h6> - {{ Playlist.song.all|join:'<br>'  }}</h6>
+        {% for Playlist in playlists %} <!-- Go through playlists -->
+            {% if filter == Playlist.title %} <!-- If selected matches playlist -->
+                <h6> - {{ Playlist.song.all|join:'<br>'  }}</h6> <!-- Display songs in playlist -->
             {% endif %}
         {% endfor %}
     </ul>
