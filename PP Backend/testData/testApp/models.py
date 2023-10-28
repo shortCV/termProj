@@ -3,6 +3,7 @@ from django.db import models
 from datetime import datetime
 import django.utils.timezone
 from datetime import timedelta, datetime
+from django.contrib.auth.models import User
 
 
 class Task(models.Model):
@@ -41,6 +42,7 @@ class Albums(models.Model):
 
 class Playlist(models.Model):
     title = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default="1")
     song = models.ManyToManyField(Songs)
 
     def __str__(self):
