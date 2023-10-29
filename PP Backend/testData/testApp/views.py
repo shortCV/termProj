@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect
 from django import forms
 from .models import Task, Songs, Artists, Albums, Playlist, Reviews
-from .forms import NewUserForm, ReviewForm
+from .forms import NewUserForm, ReviewForm, CreatePlayForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
@@ -95,10 +95,24 @@ def publish_review(request):
     if request.method == "POST":  # when user is directed to register page
         form = ReviewForm(request.POST)  # form creates new user
         if form.is_valid():
-            form.save() #<-- saving the form to the database
+            form.save()  # <-- saving the form to the database
             return redirect("index")  # go back to index when form goes through
             # if form isn't valid
-        messages.error(request, "Unsuccessful registration. Invalid information.")
+        messages.error(request, "Unsuccessful . Invalid information.")
 
     form = ReviewForm()
     return render(request, 'index.html', context={"review_form": form})
+
+
+@app.route('/create_play', methods=['POST'])
+def create_play(request):
+    if request.method == "POST":  # when user is directed to register page
+        form = CreatePlayForm(request.POST)  # form creates new user
+        if form.is_valid():
+            form.save()  # <-- saving the form to the database
+            return redirect("index")  # go back to index when form goes through
+            # if form isn't valid
+        messages.error(request, "Unsuccessful . Invalid information.")
+
+    form = CreatePlayForm()
+    return render(request, 'index.html', context={"create_play_form": form})

@@ -56,6 +56,23 @@
                 </select>
                 <input type="submit" value="Submit"> <!-- Submit -->
             </form>
+
+            <form action="/create_play" method="post">
+                {% csrf_token %} <!--Keeps hackers from taking over the form-->
+                {{ create_play_form }}
+                <label for="list_song">Create Playlist:</label>
+                <br>
+                Playlist Name:
+                <input type = "text" class="form-control" name="title">
+                <br>
+                <select name="song" id="list_song" multiple>
+                    {% for Songs in songs %} <!-- Go through all playlists -->
+                        <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Create"> <!-- Submit -->
+            </form>
+
         {% else %} <!-- If user is not logged in -->
             <h4>Nothing to see here</h4>
         {% endif %}
@@ -72,6 +89,11 @@
                     {{ review_form }}
                     <div>
                         <h6>Your Review</h6>
+                        <select name="song">
+                            {% for Songs in songs %} <!-- Go through all playlists -->
+                                <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
+                            {% endfor %}
+                        </select>
                         Star rating:
                         <br>
                         <div class="rate">

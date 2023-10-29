@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Reviews
+from .models import Reviews, Playlist
 
 
 # Create your forms here.
@@ -13,7 +13,8 @@ class NewUserForm(UserCreationForm):
     class Meta:
         model = User
         fields = (
-        "username", "email", "password1", "password2")  # fields that appear on register form (password2 is validation)
+            "username", "email", "password1",
+            "password2")  # fields that appear on register form (password2 is validation)
 
     def save(self, commit=True):  # saves the email to user
         user = super(NewUserForm, self).save(commit=False)
@@ -28,5 +29,10 @@ class NewUserForm(UserCreationForm):
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Reviews
-        fields = ('title', 'review', 'rating')
+        fields = ('title', 'review', 'rating', 'song')
 
+
+class CreatePlayForm(forms.ModelForm):
+    class Meta:
+        model = Playlist
+        fields = ('title', 'song')

@@ -25,4 +25,6 @@ urlpatterns = [
     path("login", views.login_request, name="login"),
     path("logout", views.logout_request, name="logout"),
     path('publish_review', views.publish_review, name='publish_review'),
+    path('create_play', views.create_play, name='create_play'),
+
 ]
