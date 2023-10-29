@@ -5,10 +5,12 @@
     <title>Playlist</title>
 </head>
 <body>
+    <!-- https://www.youtube.com/watch?v=0x0pWrm2nKI -->
     <h4> Selected : {{filter}}</h4> <!-- Show selected playlist -->
     <ul>
         {% for Playlist in playlists %} <!-- Go through playlists -->
             {% if filter == Playlist.title %} <!-- If selected matches playlist -->
+                <!-- https://stackoverflow.com/questions/2621918/how-to-generate-a-line-break-in-django-template -->
                 <h6> - {{ Playlist.song.all|join:'<br>'  }}</h6> <!-- Display songs in playlist -->
             {% endif %}
         {% endfor %}

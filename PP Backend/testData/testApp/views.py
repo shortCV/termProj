@@ -1,14 +1,19 @@
 # Create your views here.
 from django.shortcuts import render, redirect
 from django import forms
-from .models import Task, Songs, Artists, Albums, Playlist
-from .forms import NewUserForm
+from .models import Task, Songs, Artists, Albums, Playlist, Reviews
+from .forms import NewUserForm, ReviewForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from flask import Flask, render_template, send_from_directory, request
+
+app = Flask(__name__, static_folder='static')
+from django.http import HttpResponse
 
 
 def search(request):
+    # https://www.youtube.com/watch?v=AGtae4L5BbI
     searched = request.POST['search']  # get inputted search text (i.e. what you're searching for)
     songs = Songs.objects.filter(title__icontains=searched)  # any songs that contain the inputted search
     artists = Artists.objects.filter(name__icontains=searched)  # any artists that contain the inputted search
@@ -22,12 +27,13 @@ def search(request):
 
 
 def play(request):
-    results = request.GET['filter'] # get selected playlist from dropdown 
+    results = request.GET['filter']  # get selected playlist from dropdown
     songs = Songs.objects.all()
     artists = Artists.objects.all()
     albums = Albums.objects.all()
     playlists = Playlist.objects.all()
-    return render(request, 'playlist_display.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'filter': results})
+    return render(request, 'playlist_display.html',
+                  {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'filter': results})
 
 
 def index(request):
@@ -38,6 +44,7 @@ def index(request):
     return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists})
 
 
+# https://ordinarycoders.com/blog/article/django-user-register-login-logout
 def register_request(request):
     if request.method == "POST":  # when user is directed to register page
         form = NewUserForm(request.POST)  # form creates new user
@@ -81,3 +88,17 @@ def logout_request(request):
     logout(request)  # logs out user
     messages.info(request, "You have successfully logged out.")  # user feedback
     return redirect("index")  # direct user back to homepage
+
+
+@app.route('/publish_review', methods=['POST'])
+def publish_review(request):
+    if request.method == "POST":  # when user is directed to register page
+        form = ReviewForm(request.POST)  # form creates new user
+        if form.is_valid():
+            form.save() #<-- saving the form to the database
+            return redirect("index")  # go back to index when form goes through
+            # if form isn't valid
+        messages.error(request, "Unsuccessful registration. Invalid information.")
+
+    form = ReviewForm()
+    return render(request, 'index.html', context={"review_form": form})
