@@ -82,46 +82,51 @@
         <!-- Only show 5 -->
         <!-- https://stackoverflow.com/questions/4270330/django-show-a-manytomanyfield-in-a-template
         https://www.youtube.com/watch?v=3KCBN7WJXMY&t=0s -->
-        {% for Songs in songs|slice:":5" %}
-            <h5>{{ Songs.title }}, {{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h5>
-                <form action="/publish_review" method="post">
-                    {% csrf_token %} <!--Keeps hackers from taking over the form-->
-                    {{ review_form }}
-                    <div>
-                        <h6>Your Review</h6>
-                        <select name="song">
-                            {% for Songs in songs %} <!-- Go through all playlists -->
-                                <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
-                            {% endfor %}
-                        </select>
-                        Star rating:
-                        <br>
-                        <div class="rate">
-                            <input type="radio" id="star5" name="rating" value="5"> <label for="star5" title="5"></label>
-                            <input type="radio" id="star4_5" name="rating" value="4.5"> <label for="star4_5" title="4.5" class="half"></label>
-                            <input type="radio" id="star4" name="rating" value="4"> <label for="star4" title="4"></label>
-                            <input type="radio" id="star3_5" name="rating" value="3.5"> <label for="star3_5" title="3.5" class="half"></label>
-                            <input type="radio" id="star3" name="rating" value="3"> <label for="star3" title="3"></label>
-                            <input type="radio" id="star2_5" name="rating" value="2.5"> <label for="star2_5" title="2.5" class="half"></label>
-                            <input type="radio" id="star2" name="rating" value="2"> <label for="star2" title="2"></label>
-                            <input type="radio" id="star1_5" name="rating" value="1.5"> <label for="star1_5" title="1.5" class="half"></label>
-                            <input type="radio" id="star1" name="rating" value="1"> <label for="star1" title="1"></label>
-                            <input type="radio" id="star0_5" name="rating" value="0.5"> <label for="star0_5" title="0.5" class="half"></label>
-                        </div>
-                        Title review:
-                        <input type = "text" class="form-control" name="title">
-                        <br>
-                        Review:
-                        <textarea name="review" rows="5" class="form-control"></textarea>
-                        <br>
-                        <input type = "submit" value="Publish">
-                        <br>
+        <form action="/publish_review" method="post">
+            {% csrf_token %} <!--Keeps hackers from taking over the form-->
+            {{ review_form }}
+            <div>
+                <h6>Your Review</h6>
+                <select name="song">
+                    {% for Songs in songs %} <!-- Go through all playlists -->
+                        <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
+                    {% endfor %}
+                </select>
+                Star rating:
+                <br>
+                <div class="rate">
+                    <input type="radio" id="star5" name="rating" value="5"> <label for="star5" title="5"></label>
+                    <input type="radio" id="star4_5" name="rating" value="4.5"> <label for="star4_5" title="4.5" class="half"></label>
+                    <input type="radio" id="star4" name="rating" value="4"> <label for="star4" title="4"></label>
+                    <input type="radio" id="star3_5" name="rating" value="3.5"> <label for="star3_5" title="3.5" class="half"></label>
+                    <input type="radio" id="star3" name="rating" value="3"> <label for="star3" title="3"></label>
+                    <input type="radio" id="star2_5" name="rating" value="2.5"> <label for="star2_5" title="2.5" class="half"></label>
+                    <input type="radio" id="star2" name="rating" value="2"> <label for="star2" title="2"></label>
+                    <input type="radio" id="star1_5" name="rating" value="1.5"> <label for="star1_5" title="1.5" class="half"></label>
+                    <input type="radio" id="star1" name="rating" value="1"> <label for="star1" title="1"></label>
+                    <input type="radio" id="star0_5" name="rating" value="0.5"> <label for="star0_5" title="0.5" class="half"></label>
+                </div>
+                Title review:
+                <input type = "text" class="form-control" name="title">
+                <br>
+                Review:
+                <textarea name="review" rows="5" class="form-control"></textarea>
+                <br>
+                <input type = "submit" value="Publish">
+                <br>
 
-                    </div>
-                </form>
-        {% endfor %}
+            </div>
+        </form>
     <h2>Like</h2>
-
+    <ul>
+        {% for Reviews in reviews|slice:":5" %}
+            <h6>{{ Reviews.song }}
+                <br> {{ Reviews.title }} - {{ Reviews.user }}
+                <br> {{ Reviews.rating }}
+                <br> {{ Reviews.review }}
+            </h6>
+        {% endfor %}
+    </ul>
 
 </body>
 </html>

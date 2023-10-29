@@ -41,7 +41,8 @@ def index(request):
     artists = Artists.objects.all()
     albums = Albums.objects.all()
     playlists = Playlist.objects.all()
-    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists})
+    reviews = Reviews.objects.all()
+    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'reviews': reviews})
 
 
 # https://ordinarycoders.com/blog/article/django-user-register-login-logout
