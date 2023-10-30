@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>You searched for...</title>
+</head>
+<body>
+    <ul> <!--Display search result-->
+
+        {% if searched %}
+            <h2>You searched: {{ searched }}</h2> <!-- Show searched result -->
+            <br/>
+
+            <h3>Songs:</h3> <!-- Song section -->
+            {% for song in songs %} <!-- Loop through songs that relate to the search -->
+                <h6> {{ song.title }}, {{ song.artist.all|join:", "  }} </h6>  <!-- Display -->
+            {% endfor %}
+            <br/>
+
+            <h3>Artists:</h3> <!-- Artist section -->
+            {% for artist in artists %} <!-- Loop through artists that relate to the search -->
+                <h6> {{ artist }} </h6> <!-- Display -->
+            {% endfor %}
+            <br/>
+
+            <h3>Albums:</h3> <!-- Album section -->
+            {% for album in albums %} <!-- Loop through albums that relate to the search -->
+                <h6> {{ album.title }}, {{ album.artist.all|join:", "  }} </h6> <!-- Display -->
+            {% endfor %}
+
+        {% else %}
+
+            <h2>You didn't search anything</h2> <!-- User feedback if user didn't search anything -->
+
+        {% endif %}
+    </ul>
+
+
+
+</body>
+</html>

@@ -1,27 +1,133 @@
 <!DOCTYPE html>
 <html lang="">
 <head>
-    <title>To-Do</title>
+    <title>Homepage</title>
 </head>
 <body>
     <h1>Thump</h1>
+    <!---->
 
-    <h2>Display</h2>
+    <!--Welcome user/see who's logged in-->
+    {% block content %}
+    <!-- Show username or guest if not logged in -->
+    <!--  https://realpython.com/django-user-management/ -->
+    Hello, {{ user.username|default:'Guest' }}!
+    {% endblock %}
+
+    <h2>Display</h2> <!--Display songs in the database-->
     <ul>
-        {% for Songs in songs %}
+        <!-- Only show 5 -->
+        <!-- https://stackoverflow.com/questions/4270330/django-show-a-manytomanyfield-in-a-template -->
+        {% for Songs in songs|slice:":5" %}
             <h6>{{ Songs.title }}, {{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h6>
         {% endfor %}
     </ul>
 
-    <h2>Search</h2>
-    <div>
-        <input type="text" placeholder="Search.." name="search">
-        <button type="submit">Submit</button>
-    </div>
-    <h2>User Accounts</h2>
+    <h2>Search</h2> <!-- Search Function -->
+    <form method="post" action="/search_direct">
+        {% csrf_token %} <!--Keeps hackers from taking over the form-->
+        <!-- https://www.w3schools.com/howto/howto_css_searchbar.asp -->
+        <!-- https://www.youtube.com/watch?v=AGtae4L5BbI -->
+        <input type="text" placeholder="Search.." name="search"> <!-- Search text inside bar -->
+        <button type="submit">Submit</button> <!-- Submit button -->
+    </form>
+
+    <h2>User Accounts</h2> <!-- User Account -->
+    <ul>
+        <!-- https://ordinarycoders.com/blog/article/django-user-register-login-logout -->
+        {% if user.is_authenticated %} <!-- If user is already logged in -->
+            <a class="nav-link" href="/logout">Logout</a>
+        {% else %} <!-- If user is not logged in -->
+            <a class="nav-link" href="/login">Login</a>
+        {% endif %}
+    </ul>
+
     <h2>Playlists</h2>
+    <ul>
+        {% if user.is_authenticated %} <!-- If user is already logged in -->
+            <form action="/playlist_display" method="get"> <!-- Direct to playlist display page -->
+                <label for="filter">Choose Playlist:</label>
+                <select name="filter" id="filter"> <!-- Dropdown -->
+                    {% for Playlist in playlists %} <!-- Go through all playlists -->
+                        {% if Playlist.user == user %} <!-- If users playlist match current user logged in -->
+                            <option value={{Playlist.title}}>{{ Playlist.title }}</option> <!-- Display playlist as option -->
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Submit"> <!-- Submit -->
+            </form>
+
+            <form action="/create_play" method="post">
+                {% csrf_token %} <!--Keeps hackers from taking over the form-->
+                {{ create_play_form }}
+                <label for="list_song">Create Playlist:</label>
+                <br>
+                Playlist Name:
+                <input type = "text" class="form-control" name="title">
+                <br>
+                <select name="song" id="list_song" multiple>
+                    {% for Songs in songs %} <!-- Go through all playlists -->
+                        <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Create"> <!-- Submit -->
+            </form>
+
+        {% else %} <!-- If user is not logged in -->
+            <h4>Nothing to see here</h4>
+        {% endif %}
+    </ul>
+
     <h2>Review</h2>
+        <!-- Only show 5 -->
+        <!-- https://stackoverflow.com/questions/4270330/django-show-a-manytomanyfield-in-a-template
+        https://www.youtube.com/watch?v=3KCBN7WJXMY&t=0s -->
+        <form action="/publish_review" method="post">
+            {% csrf_token %} <!--Keeps hackers from taking over the form-->
+            {{ review_form }}
+            <div>
+                <h6>Your Review</h6>
+                <select name="song">
+                    {% for Songs in songs %} <!-- Go through all playlists -->
+                        <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
+                    {% endfor %}
+                </select>
+                Star rating:
+                <br>
+                <div class="rate">
+                    <input type="radio" id="star5" name="rating" value="5"> <label for="star5" title="5"></label>
+                    <input type="radio" id="star4_5" name="rating" value="4.5"> <label for="star4_5" title="4.5" class="half"></label>
+                    <input type="radio" id="star4" name="rating" value="4"> <label for="star4" title="4"></label>
+                    <input type="radio" id="star3_5" name="rating" value="3.5"> <label for="star3_5" title="3.5" class="half"></label>
+                    <input type="radio" id="star3" name="rating" value="3"> <label for="star3" title="3"></label>
+                    <input type="radio" id="star2_5" name="rating" value="2.5"> <label for="star2_5" title="2.5" class="half"></label>
+                    <input type="radio" id="star2" name="rating" value="2"> <label for="star2" title="2"></label>
+                    <input type="radio" id="star1_5" name="rating" value="1.5"> <label for="star1_5" title="1.5" class="half"></label>
+                    <input type="radio" id="star1" name="rating" value="1"> <label for="star1" title="1"></label>
+                    <input type="radio" id="star0_5" name="rating" value="0.5"> <label for="star0_5" title="0.5" class="half"></label>
+                </div>
+                Title review:
+                <input type = "text" class="form-control" name="title">
+                <br>
+                Review:
+                <textarea name="review" rows="5" class="form-control"></textarea>
+                <br>
+                <input type = "submit" value="Publish">
+                <br>
+
+            </div>
+        </form>
     <h2>Like</h2>
+    <ul>
+        {% for Reviews in reviews|slice:":5" %}
+            <h6>{{ Reviews.song }}
+                <br> {{ Reviews.title }} - {{ Reviews.user }}
+                <br> {{ Reviews.rating }}
+                <br> {{ Reviews.review }}
+            </h6>
+            <button type="submit">Like</button>
+        {% endfor %}
+    </ul>
 
 </body>
 </html>

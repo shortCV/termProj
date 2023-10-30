@@ -1,7 +1,8 @@
 from dotenv import load_dotenv
 import os
 import sys
-
+from flask import Flask, render_template, send_from_directory, request
+app = Flask(__name__, static_folder='static')
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
