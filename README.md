@@ -1,5 +1,5 @@
 # termProj
-
+https://github.com/shortCV/termProj
 - pip install django
 - django-admin startproject testData
 - cd testData
