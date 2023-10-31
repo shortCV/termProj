@@ -126,16 +126,18 @@
                 <br> {{ Reviews.review }}
             </h6>
             <!-- https://www.youtube.com/watch?v=xqFM6ykQEwo -->
-            <form action="/like_review" method="post" class="ui form">
-                {% csrf_token %} <!--Keeps hackers from taking over the form-->
-                <input type="hidden" name="review_id" value="{{Reviews.id}}"> <!-- Review id-->
-                {% if user not in Reviews.likes.all %} <!-- If user has yet to like the review -->
-                    <button type="submit">Like</button>
-                {% else %} <!-- If user has liked the review -->
-                    <button type="submit">Unlike</button> <!-- give option to unlike -->
-                {% endif %}
-            </form>
-            <strong>{{ Reviews.likes.all.count }} likes</strong> <!-- Display amount of users that've liked review -->
+            {% if user.is_authenticated %}
+                <form action="/like_review" method="post" class="ui form">
+                    {% csrf_token %} <!--Keeps hackers from taking over the form-->
+                    <input type="hidden" name="review_id" value="{{Reviews.id}}"> <!-- Review id-->
+                    {% if user not in Reviews.likes.all %} <!-- If user has yet to like the review -->
+                        <button type="submit">Like</button>
+                    {% else %} <!-- If user has liked the review -->
+                        <button type="submit">Unlike</button> <!-- give option to unlike -->
+                    {% endif %}
+                </form>
+                <strong>{{ Reviews.likes.all.count }} likes</strong> <!-- Display amount of users that've liked review -->
+            {% endif %}
         {% endfor %}
     </ul>
 
