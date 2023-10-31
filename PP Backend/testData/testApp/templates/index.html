@@ -88,8 +88,8 @@
             <div>
                 <h6>Your Review</h6>
                 <select name="song">
-                    {% for Songs in songs %} <!-- Go through all playlists -->
-                        <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display playlist as option -->
+                    {% for Songs in songs %} <!-- Go through all songs -->
+                        <option value={{Songs.id}} name="song">{{ Songs.title }}</option> <!-- Display songs as option -->
                     {% endfor %}
                 </select>
                 Star rating:
@@ -118,14 +118,22 @@
             </div>
         </form>
     <h2>Like</h2>
-    <ul>
+    <ul> <!-- Show all reviews -->
         {% for Reviews in reviews|slice:":5" %}
             <h6>{{ Reviews.song }}
                 <br> {{ Reviews.title }} - {{ Reviews.user }}
                 <br> {{ Reviews.rating }}
                 <br> {{ Reviews.review }}
             </h6>
-            <button type="submit">Like</button>
+            <form action="/reviews:publish_review" method="post" class="ui form">
+                <input type="hidden" name="review_id" value="{{Reviews.id}}">
+                {% if user not in Reviews.like.all %}
+                    <button type="submit">Like</button> <!-- Like (not functional) -->
+                {% else %}
+                    <button type="submit">Unlike</button>
+                {% endif %}
+            </form>
+            <strong>{{ Reviews.like.all.count }} likes</strong>
         {% endfor %}
     </ul>
 

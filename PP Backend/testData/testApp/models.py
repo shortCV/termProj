@@ -55,11 +55,30 @@ class Playlist(models.Model):
 
 class Reviews(models.Model):
     song = models.ForeignKey(Songs, on_delete=models.CASCADE, default="1")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default="1")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default="1", related_name="user")
     title = models.CharField(max_length=100, default="Name")
     review = models.CharField(max_length=600)
     rating = models.FloatField()
-    like = models.IntegerField(default="0")
+    likes = models.ManyToManyField(User, default=None, blank=True, related_name="likes")
 
     def __str__(self):
         return '%s' % self.song
+
+    @property
+    def amount_likes(self):
+        return self.likes.all().count()
+
+
+LIKE_UNLIKE = (
+    ('Like', 'Like'),
+    ('Unlike', 'Unlike'),
+)
+
+
+class Like(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    review = models.ForeignKey(Reviews, on_delete=models.CASCADE)
+    value = models.CharField(choices=LIKE_UNLIKE, default='Like', max_length=10)
+
+    def __str__(self):
+        return str(self.review)

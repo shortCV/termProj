@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render, redirect
 from django import forms
-from .models import Task, Songs, Artists, Albums, Playlist, Reviews
+from .models import Task, Songs, Artists, Albums, Playlist, Reviews, Like
 from .forms import NewUserForm, ReviewForm, CreatePlayForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
@@ -9,7 +9,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, static_folder='static')
-from django.http import HttpResponse
 
 
 def search(request):
@@ -42,7 +41,8 @@ def index(request):
     albums = Albums.objects.all()
     playlists = Playlist.objects.all()
     reviews = Reviews.objects.all()
-    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'reviews': reviews})
+    return render(request, 'index.html',
+                  {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'reviews': reviews})
 
 
 # https://ordinarycoders.com/blog/article/django-user-register-login-logout
@@ -93,7 +93,7 @@ def logout_request(request):
 
 @app.route('/publish_review', methods=['POST'])
 def publish_review(request):
-    if request.method == "POST":  # when user is directed to register page
+    if request.method == "POST":
         form = ReviewForm(request.POST)  # form creates new user
         if form.is_valid():
             form.save()  # <-- saving the form to the database
@@ -107,7 +107,7 @@ def publish_review(request):
 
 @app.route('/create_play', methods=['POST'])
 def create_play(request):
-    if request.method == "POST":  # when user is directed to register page
+    if request.method == "POST":
         form = CreatePlayForm(request.POST)  # form creates new user
         if form.is_valid():
             form.save()  # <-- saving the form to the database
@@ -117,3 +117,7 @@ def create_play(request):
 
     form = CreatePlayForm()
     return render(request, 'index.html', context={"create_play_form": form})
+
+
+def like_review(request):
+    return redirect('reviews:publish_review')
