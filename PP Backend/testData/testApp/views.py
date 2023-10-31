@@ -119,5 +119,26 @@ def create_play(request):
     return render(request, 'index.html', context={"create_play_form": form})
 
 
+@app.route('/like_review', methods=['POST'])
 def like_review(request):
-    return redirect('reviews:publish_review')
+    # https://www.youtube.com/watch?v=xqFM6ykQEwo
+    user = request.user # get user
+    if request.method == "POST":
+        review_id = request.POST.get('review_id')  # get hidden input with Reviews id
+        review_element = Reviews.objects.get(id=review_id)  # get review model
+
+        if user in review_element.likes.all():  # if user has already liked review
+            review_element.likes.remove(user)  # remove as they've pressed unlike
+        else:
+            review_element.likes.add(user)  # like review as user has not liked it yet
+
+        like, created = Like.objects.get_or_create(user=user, review_id=review_id)  # define Like model
+
+        if not created:
+            if like.value == 'Like':  # change like model value
+                like.value = 'Unlike'
+            else:
+                like.value = 'Like'
+
+        like.save()  # save like
+    return redirect("index")  # direct back to homepage

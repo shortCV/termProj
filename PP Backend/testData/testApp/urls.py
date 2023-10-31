@@ -17,7 +17,7 @@ Including another URLconf
 from django.urls import path
 from . import views
 
-app_name = 'reviews'
+
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -28,6 +28,6 @@ urlpatterns = [
     path("logout", views.logout_request, name="logout"),
     path('publish_review', views.publish_review, name='publish_review'),
     path('create_play', views.create_play, name='create_play'),
-    path('like/', views.like_review, name='like_review'),
+    path('like_review', views.like_review, name='like_review'),
 
 ]

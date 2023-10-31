@@ -68,7 +68,7 @@ class Reviews(models.Model):
     def amount_likes(self):
         return self.likes.all().count()
 
-
+# https://www.youtube.com/watch?v=xqFM6ykQEwo
 LIKE_UNLIKE = (
     ('Like', 'Like'),
     ('Unlike', 'Unlike'),
