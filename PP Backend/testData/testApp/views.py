@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import render, redirect
 from django import forms
-from .models import Task, Songs, Artists, Albums, Playlist, Reviews
+from .models import Task, Songs, Artists, Albums, Playlist, Reviews, Like
 from .forms import NewUserForm, ReviewForm, CreatePlayForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
@@ -9,7 +9,6 @@ from django.contrib.auth.forms import AuthenticationForm
 from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, static_folder='static')
-from django.http import HttpResponse
 
 
 def search(request):
@@ -42,7 +41,8 @@ def index(request):
     albums = Albums.objects.all()
     playlists = Playlist.objects.all()
     reviews = Reviews.objects.all()
-    return render(request, 'index.html', {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'reviews': reviews})
+    return render(request, 'index.html',
+                  {'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlists, 'reviews': reviews})
 
 
 # https://ordinarycoders.com/blog/article/django-user-register-login-logout
@@ -93,7 +93,7 @@ def logout_request(request):
 
 @app.route('/publish_review', methods=['POST'])
 def publish_review(request):
-    if request.method == "POST":  # when user is directed to register page
+    if request.method == "POST":
         form = ReviewForm(request.POST)  # form creates new user
         if form.is_valid():
             form.save()  # <-- saving the form to the database
@@ -107,7 +107,7 @@ def publish_review(request):
 
 @app.route('/create_play', methods=['POST'])
 def create_play(request):
-    if request.method == "POST":  # when user is directed to register page
+    if request.method == "POST":
         form = CreatePlayForm(request.POST)  # form creates new user
         if form.is_valid():
             form.save()  # <-- saving the form to the database
@@ -117,3 +117,28 @@ def create_play(request):
 
     form = CreatePlayForm()
     return render(request, 'index.html', context={"create_play_form": form})
+
+
+@app.route('/like_review', methods=['POST'])
+def like_review(request):
+    # https://www.youtube.com/watch?v=xqFM6ykQEwo
+    user = request.user # get user
+    if request.method == "POST":
+        review_id = request.POST.get('review_id')  # get hidden input with Reviews id
+        review_element = Reviews.objects.get(id=review_id)  # get review model
+
+        if user in review_element.likes.all():  # if user has already liked review
+            review_element.likes.remove(user)  # remove as they've pressed unlike
+        else:
+            review_element.likes.add(user)  # like review as user has not liked it yet
+
+        like, created = Like.objects.get_or_create(user=user, review_id=review_id)  # define Like model
+
+        if not created:
+            if like.value == 'Like':  # change like model value
+                like.value = 'Unlike'
+            else:
+                like.value = 'Like'
+
+        like.save()  # save like
+    return redirect("index")  # direct back to homepage
