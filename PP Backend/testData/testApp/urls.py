@@ -29,5 +29,7 @@ urlpatterns = [
     path('publish_review', views.publish_review, name='publish_review'),
     path('create_play', views.create_play, name='create_play'),
     path('like_review', views.like_review, name='like_review'),
+    path('api/get_songs/', views.get_songs, name='get_songs'),
+
 
 ]

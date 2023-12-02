@@ -1,4 +1,5 @@
 # Create your views here.
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django import forms
 from .models import Task, Songs, Artists, Albums, Playlist, Reviews, Like
@@ -9,7 +10,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from flask import Flask, render_template, send_from_directory, request
 
 app = Flask(__name__, static_folder='static')
-
+def get_songs(request):
+    songs = Songs.objects.all()
+    song_list = [{'title': song.title, 'artist': [artist.name for artist in song.artist.all()]} for song in songs]
+    return JsonResponse({'songs': song_list})
 
 def search(request):
     # https://www.youtube.com/watch?v=AGtae4L5BbI

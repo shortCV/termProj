@@ -19,6 +19,7 @@ class Artists(models.Model):
 
 
 class Songs(models.Model):
+    cover = models.ImageField(upload_to='cover_pic', default='default.jpg')
     title = models.CharField(max_length=200)
     artist = models.ManyToManyField(Artists)
     # https://stackoverflow.com/questions/2029295/django-datefield-default-options
