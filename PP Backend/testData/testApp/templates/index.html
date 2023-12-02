@@ -19,7 +19,10 @@
         <!-- Only show 5 -->
         <!-- https://stackoverflow.com/questions/4270330/django-show-a-manytomanyfield-in-a-template -->
         {% for Songs in songs|slice:":5" %}
-            <h6>{{ Songs.title }}, {{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h6>
+            <td>
+                {% load static %}<img src="{{ Songs.cover.url }}"/>
+            </td>
+            <h6>{{ Songs.title }},{{ Songs.date }}, {{ Songs.artist.all|join:", "  }}</h6>
         {% endfor %}
     </ul>
 
@@ -43,6 +46,18 @@
     </ul>
 
     <h2>Playlists</h2>
+    <ul>
+        <form action="/playlist_display" method="get"> <!-- Direct to playlist display page -->
+                <label for="filter">Choose Playlist:</label>
+                <select name="filter" id="filter2"> <!-- Dropdown -->
+                    {% for Playlist in playlists %} <!-- Go through all playlists -->
+                        <option value={{Playlist.title}}>{{ Playlist.title }}</option> <!-- Display playlist as option -->
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Submit"> <!-- Submit -->
+            </form>
+    </ul>
+    <h2>Playlists (only view playlists that you've created as a user)</h2>
     <ul>
         {% if user.is_authenticated %} <!-- If user is already logged in -->
             <form action="/playlist_display" method="get"> <!-- Direct to playlist display page -->

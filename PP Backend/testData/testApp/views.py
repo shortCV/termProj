@@ -15,6 +15,21 @@ def get_songs(request):
     song_list = [{'title': song.title, 'artist': [artist.name for artist in song.artist.all()]} for song in songs]
     return JsonResponse({'songs': song_list})
 
+def get_reviews(request):
+    reviews = Reviews.objects.all()
+    review_list = [{
+        'song': {
+                'title': review.song.title,
+                'artist': [artist.name for artist in review.song.artist.all()]
+            },
+            'user': review.user.username,
+            'title': review.title,
+            'text': review.review,
+            'rating': review.rating,
+            'likes': review.likes.all().count(),
+        } for review in reviews]
+    return JsonResponse({'reviews': review_list})
+
 def search(request):
     # https://www.youtube.com/watch?v=AGtae4L5BbI
     searched = request.POST['search']  # get inputted search text (i.e. what you're searching for)
