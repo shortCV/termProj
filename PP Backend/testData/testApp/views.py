@@ -8,8 +8,27 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from flask import Flask, render_template, send_from_directory, request
+from django.db.models import Q
 
 app = Flask(__name__, static_folder='static')
+
+def search_update(request):
+    search_query = request.GET.get('search_update')  # get inputted search text (i.e. what you're searching for)
+    songs = Songs.objects.filter(title__icontains=search_query)  # any songs that contain the inputted search
+    artists = Artists.objects.filter(name__icontains=search_query)  # any artists that contain the inputted search
+    albums = Albums.objects.filter(title__icontains=search_query)  # any albums that contain the inputted search
+
+    return JsonResponse({'songs': songs, 'artists': artists, 'albums': albums})
+
+def get_albums(request):
+    albums = Albums.objects.all()
+    album_list = [{'title': album.title, 'artist': [artist.name for artist in album.artist.all()], 'song':[song.title for song in album.song.all()]} for album in albums]
+    return JsonResponse({'albums': album_list})
+def get_artist(request):
+    artists = Artists.objects.all()
+    artist_list = [{'name': artist.name} for artist in artists]
+    return JsonResponse({'artists': artist_list})
+
 def get_songs(request):
     songs = Songs.objects.all()
     song_list = [{'title': song.title, 'artist': [artist.name for artist in song.artist.all()]} for song in songs]

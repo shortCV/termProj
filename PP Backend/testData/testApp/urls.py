@@ -30,6 +30,8 @@ urlpatterns = [
     path('create_play', views.create_play, name='create_play'),
     path('like_review', views.like_review, name='like_review'),
     path('api/get_songs/', views.get_songs, name='get_songs'),
+    path('api/get_artist/', views.get_artist, name='get_artist'),
+    path('api/get_albums/', views.get_albums, name='get_albums'),
     path('api/get_reviews/', views.get_reviews, name='get_reviews'),
 
 
