@@ -25,12 +25,9 @@ def search_update(request):
     return JsonResponse({'songs': songs, 'artists': artists, 'albums': albums})
 
 def get_playlist(request):
-    songs = Songs.objects.all()
-    artists = Artists.objects.all()
-    albums = Albums.objects.all()
     playlists = Playlist.objects.all()
-    playlist_list = [{'title': playlist.title, 'user': playlist.user, 'song': [song.title for song in playlist.song.all()]} for playlist in playlists]
-    return JsonResponse({'songs': songs, 'artists': artists, 'albums': albums, 'playlists': playlist_list})
+    playlist_list = [{'title': playlist.title, 'songs': [song.title for song in playlist.song.all()]} for playlist in playlists]
+    return JsonResponse({'playlists': playlist_list})
 
 def get_albums(request):
     albums = Albums.objects.all()
