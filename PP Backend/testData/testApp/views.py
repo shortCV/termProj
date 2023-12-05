@@ -1,15 +1,62 @@
 # Create your views here.
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
 from django import forms
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import json
+
 from .models import Task, Songs, Artists, Albums, Playlist, Reviews, Like
 from .forms import NewUserForm, ReviewForm, CreatePlayForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from flask import Flask, render_template, send_from_directory, request
+from django.db.models import Q
 
 app = Flask(__name__, static_folder='static')
 
+def search_update(request):
+    search_query = request.GET.get('search_update')  # get inputted search text (i.e. what you're searching for)
+    songs = Songs.objects.filter(title__icontains=search_query)  # any songs that contain the inputted search
+    artists = Artists.objects.filter(name__icontains=search_query)  # any artists that contain the inputted search
+    albums = Albums.objects.filter(title__icontains=search_query)  # any albums that contain the inputted search
+
+    return JsonResponse({'songs': songs, 'artists': artists, 'albums': albums})
+
+def get_playlist(request):
+    playlists = Playlist.objects.all()
+    playlist_list = [{'title': playlist.title, 'songs': [song.title for song in playlist.song.all()]} for playlist in playlists]
+    return JsonResponse({'playlists': playlist_list})
+
+def get_albums(request):
+    albums = Albums.objects.all()
+    album_list = [{'title': album.title, 'artist': [artist.name for artist in album.artist.all()], 'song':[song.title for song in album.song.all()]} for album in albums]
+    return JsonResponse({'albums': album_list})
+def get_artist(request):
+    artists = Artists.objects.all()
+    artist_list = [{'name': artist.name} for artist in artists]
+    return JsonResponse({'artists': artist_list})
+
+def get_songs(request):
+    songs = Songs.objects.all()
+    song_list = [{'title': song.title, 'artist': [artist.name for artist in song.artist.all()]} for song in songs]
+    return JsonResponse({'songs': song_list})
+
+def get_reviews(request):
+    reviews = Reviews.objects.all()
+    review_list = [{
+        'song': {
+                'title': review.song.title,
+                'artist': [artist.name for artist in review.song.artist.all()]
+            },
+            'user': review.user.username,
+            'title': review.title,
+            'text': review.review,
+            'rating': review.rating,
+            'likes': review.likes.all().count(),
+        } for review in reviews]
+    return JsonResponse({'reviews': review_list})
 
 def search(request):
     # https://www.youtube.com/watch?v=AGtae4L5BbI
@@ -90,6 +137,47 @@ def logout_request(request):
     messages.info(request, "You have successfully logged out.")  # user feedback
     return redirect("index")  # direct user back to homepage
 
+def logout_view(request):
+    logout(request)
+    return JsonResponse({"success": True})
+
+
+@require_POST
+@csrf_exempt
+def login_view(request):
+    if request.method == "POST":  # when user is directed to login page
+        form = AuthenticationForm(request, data=request.POST)  # pre-built django authentication form
+
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)  # validates users input of credentials
+
+            if user is not None:
+                login(request, user)  # login user
+                messages.info(request, f"You are now logged in as {username}.")  # user feedback
+                return JsonResponse({"success": True})
+            else:
+                return JsonResponse({"success": False, "message": "Invalid username or password."}, status=401)
+        else:
+            errors = dict(form.errors.items())
+            return JsonResponse({"success": False, "message": "Invalid form submission.", "errors": errors}, status=401)
+
+    return JsonResponse({"success": False, "message": "Invalid request."}, status=400)
+
+            # form = AuthenticationForm()
+
+   # request_json = json.loads(request.body)
+   # username = request_json.get('username')
+    #password = request_json.get('password')
+    #user = authenticate(request, username=username, password=password)
+    #if user is not None:
+        # This will create a session for the user
+        # And it will include a session cookie in the response, which React automatically forwards to the client
+        #login(request, user)
+        #return JsonResponse({"success": True})
+   # else:
+        #return JsonResponse({"success": False}, status=401)
 
 @app.route('/publish_review', methods=['POST'])
 def publish_review(request):
@@ -142,3 +230,6 @@ def like_review(request):
 
         like.save()  # save like
     return redirect("index")  # direct back to homepage
+
+def auth_into(request):
+    return request.user.is_authenticated

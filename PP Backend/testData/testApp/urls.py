@@ -14,9 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.urls import path
 from . import views
-
 
 
 urlpatterns = [
@@ -29,5 +29,12 @@ urlpatterns = [
     path('publish_review', views.publish_review, name='publish_review'),
     path('create_play', views.create_play, name='create_play'),
     path('like_review', views.like_review, name='like_review'),
-
+    path('api/get_songs/', views.get_songs, name='get_songs'),
+    path('api/get_artist/', views.get_artist, name='get_artist'),
+    path('api/get_albums/', views.get_albums, name='get_albums'),
+    path('api/get_reviews/', views.get_reviews, name='get_reviews'),
+    path('api/get_playlist/', views.get_playlist, name='get_playlist'),
+    path('login_view/', views.login_view, name='login_view'),
+    path('logout_view/', views.logout_view, name='logout_view'),
+    path('authInto/', views.auth_into, name="auth"),
 ]
