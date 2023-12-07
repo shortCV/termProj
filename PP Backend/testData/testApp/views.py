@@ -1,7 +1,7 @@
 # Create your views here.
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect
-from .serializer import SongsSeri, ArtSeri, UsersSeri
+from .serializer import SongsSeri, ArtSeri, UsersSeri, PlaySeri
 from django import forms
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -17,6 +17,7 @@ from django.db.models import Q
 
 app = Flask(__name__, static_folder='static')
 
+
 def search_update(request):
     search_query = request.GET.get('search_update')  # get inputted search text (i.e. what you're searching for)
     songs = Songs.objects.filter(title__icontains=search_query)  # any songs that contain the inputted search
@@ -25,43 +26,50 @@ def search_update(request):
 
     return JsonResponse({'songs': songs, 'artists': artists, 'albums': albums})
 
+
 def get_playlist(request):
     playlists = Playlist.objects.all()
-    playlist_list = [{'title': playlist.title, 'songs': [song.title for song in playlist.song.all()]} for playlist in playlists]
-    return JsonResponse({'playlists': playlist_list})
+    serializer = PlaySeri(playlists, many=True, context={"request": request})
+    print(serializer)
+    return JsonResponse(serializer.data, safe=False)
+
 
 def get_albums(request):
     albums = Albums.objects.all()
-    album_list = [{'title': album.title, 'artist': [artist.name for artist in album.artist.all()], 'song':[song.title for song in album.song.all()]} for album in albums]
+    album_list = [{'title': album.title, 'artist': [artist.name for artist in album.artist.all()],
+                   'song': [song.title for song in album.song.all()]} for album in albums]
     return JsonResponse({'albums': album_list})
+
+
 def get_artist(request):
     artists = Artists.objects.all()
 
     artist_list = [{'name': artist.name} for artist in artists]
     return JsonResponse({'artists': artist_list})
 
+
 def get_songs(request):
     songs = Songs.objects.all()
     serializer = SongsSeri(songs, many=True, context={"request": request})
-    #song_list = [{'title': song.title, 'artist': [artist.name for artist in song.artist.all()]} for song in songs]
-    #return JsonResponse({'songs': song_list})
     print(serializer)
-    return JsonResponse (serializer.data, safe=False)
+    return JsonResponse(serializer.data, safe=False)
+
 
 def get_reviews(request):
     reviews = Reviews.objects.all()
     review_list = [{
         'song': {
-                'title': review.song.title,
-                'artist': [artist.name for artist in review.song.artist.all()]
-            },
-            'user': review.user.username,
-            'title': review.title,
-            'text': review.review,
-            'rating': review.rating,
-            'likes': review.likes.all().count(),
-        } for review in reviews]
+            'title': review.song.title,
+            'artist': [artist.name for artist in review.song.artist.all()]
+        },
+        'user': review.user.username,
+        'title': review.title,
+        'text': review.review,
+        'rating': review.rating,
+        'likes': review.likes.all().count(),
+    } for review in reviews]
     return JsonResponse({'reviews': review_list})
+
 
 def search(request):
     # https://www.youtube.com/watch?v=AGtae4L5BbI
@@ -142,6 +150,7 @@ def logout_request(request):
     messages.info(request, "You have successfully logged out.")  # user feedback
     return redirect("index")  # direct user back to homepage
 
+
 def logout_view(request):
     logout(request)
     return JsonResponse({"success": True})
@@ -194,7 +203,7 @@ def create_play(request):
 @app.route('/like_review', methods=['POST'])
 def like_review(request):
     # https://www.youtube.com/watch?v=xqFM6ykQEwo
-    user = request.user # get user
+    user = request.user  # get user
     if request.method == "POST":
         review_id = request.POST.get('review_id')  # get hidden input with Reviews id
         review_element = Reviews.objects.get(id=review_id)  # get review model
@@ -214,6 +223,7 @@ def like_review(request):
 
         like.save()  # save like
     return redirect("index")  # direct back to homepage
+
 
 def auth_into(request):
     return request.user.is_authenticated
