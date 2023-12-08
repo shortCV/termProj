@@ -41,3 +41,5 @@ urlpatterns = [
     path('logout_view/', views.logout_view, name='logout_view'),
     path('authInto/', views.auth_into, name="auth"),
 ]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+"https://stackoverflow.com/questions/36280056/page-not-found-404-django-media-files"
