@@ -15,7 +15,7 @@ class Artists(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
-        return '%s' % self.name
+        return self.name
 
 
 class Songs(models.Model):
@@ -44,6 +44,7 @@ class Albums(models.Model):
 
 
 class Playlist(models.Model):
+    cover = models.ImageField(upload_to='cover_pic', default='default.jpg')
     title = models.CharField(max_length=200)
     # https://stackoverflow.com/questions/39527289/associating-users-with-models-django
     # https://stackoverflow.com/questions/44026548/getting-typeerror-init-missing-1-required-positional-argument-on-delete

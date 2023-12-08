@@ -17,6 +17,8 @@ Including another URLconf
 
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
 
 
 urlpatterns = [
@@ -27,6 +29,7 @@ urlpatterns = [
     path("login", views.login_request, name="login"),
     path("logout", views.logout_request, name="logout"),
     path('publish_review', views.publish_review, name='publish_review'),
+
     path('create_play', views.create_play, name='create_play'),
     path('like_review', views.like_review, name='like_review'),
     path('api/get_songs/', views.get_songs, name='get_songs'),
@@ -37,4 +40,6 @@ urlpatterns = [
     path('login_view/', views.login_view, name='login_view'),
     path('logout_view/', views.logout_view, name='logout_view'),
     path('authInto/', views.auth_into, name="auth"),
-]
+]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+"https://stackoverflow.com/questions/36280056/page-not-found-404-django-media-files"
